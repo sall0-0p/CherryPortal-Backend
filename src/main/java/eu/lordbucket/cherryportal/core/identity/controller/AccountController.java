@@ -14,6 +14,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.UUID;
+
 @RestController
 @RequestMapping("/api/v1/accounts")
 public class AccountController {
@@ -41,7 +43,7 @@ public class AccountController {
     }
 
     @GetMapping("/{id}/profile")
-    public ResponseEntity<?> getProfile(@PathVariable Long id, @AuthenticationPrincipal UserDetails principal) {
+    public ResponseEntity<?> getProfile(@PathVariable UUID id, @AuthenticationPrincipal UserDetails principal) {
         if (!accountRepository.existsById(id)) {
             return ResponseEntity.status(404).body("No such account exists.");
         }

@@ -1,7 +1,9 @@
 package eu.lordbucket.cherryportal.core.identity.dto;
 
+import java.util.UUID;
+
 public record AccountResponse(
-        Long id,
+        UUID id,
         String status
 ) {
 }

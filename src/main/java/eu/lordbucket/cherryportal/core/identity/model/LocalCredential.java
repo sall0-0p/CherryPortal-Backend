@@ -3,12 +3,14 @@ package eu.lordbucket.cherryportal.core.identity.model;
 import jakarta.persistence.*;
 import lombok.Data;
 
+import java.util.UUID;
+
 @Data
 @Entity
 @Table(name="local_credentials")
 public class LocalCredential {
     @Id
-    private Long id;
+    private UUID id;
 
     @OneToOne
     @MapsId

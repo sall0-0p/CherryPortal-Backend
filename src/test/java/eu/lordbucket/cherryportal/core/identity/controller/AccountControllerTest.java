@@ -62,7 +62,7 @@ class AccountControllerTest {
 
         mockMvc.perform(get("/api/v1/accounts/me").session(session))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id").isNumber())
+                .andExpect(jsonPath("$.id").isString())
                 .andExpect(jsonPath("$.status").value("ACTIVE"));
     }
 }
