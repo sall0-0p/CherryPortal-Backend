@@ -1,7 +1,7 @@
 package eu.lordbucket.cherryportal.core.identity.controller;
 
 import eu.lordbucket.cherryportal.core.identity.repository.LocalCredentialRepository;
-import eu.lordbucket.cherryportal.core.identity.repository.UserRepository;
+import eu.lordbucket.cherryportal.core.identity.repository.AccountRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,14 +24,15 @@ class AuthControllerTest {
 
     @Autowired MockMvc mockMvc;
     @Autowired LocalCredentialRepository localCredentialRepository;
-    @Autowired UserRepository userRepository;
+    @Autowired
+    AccountRepository accountRepository;
 
     // Clean state before each test so tests don't interfere with each other.
     // Credentials reference Users via FK, so credentials must be deleted first.
     @BeforeEach
     void setUp() {
         localCredentialRepository.deleteAll();
-        userRepository.deleteAll();
+        accountRepository.deleteAll();
     }
 
     @Test

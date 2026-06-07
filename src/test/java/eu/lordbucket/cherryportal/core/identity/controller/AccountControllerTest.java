@@ -1,7 +1,7 @@
 package eu.lordbucket.cherryportal.core.identity.controller;
 
 import eu.lordbucket.cherryportal.core.identity.repository.LocalCredentialRepository;
-import eu.lordbucket.cherryportal.core.identity.repository.UserRepository;
+import eu.lordbucket.cherryportal.core.identity.repository.AccountRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,12 +23,13 @@ class AccountControllerTest {
 
     @Autowired MockMvc mockMvc;
     @Autowired LocalCredentialRepository localCredentialRepository;
-    @Autowired UserRepository userRepository;
+    @Autowired
+    AccountRepository accountRepository;
 
     @BeforeEach
     void setUp() {
         localCredentialRepository.deleteAll();
-        userRepository.deleteAll();
+        accountRepository.deleteAll();
     }
 
     @Test
@@ -38,7 +39,7 @@ class AccountControllerTest {
     }
 
     @Test
-    void me_withValidSession_returnsProfile() throws Exception {
+    void me_withValidSession_returnsAccountInfo() throws Exception {
         // Register a user first
         mockMvc.perform(post("/api/v1/auth/register")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -59,10 +60,9 @@ class AccountControllerTest {
 
         MockHttpSession session = (MockHttpSession) loginResult.getRequest().getSession(false);
 
-        // me should resolve the logged-in user and return their profile
         mockMvc.perform(get("/api/v1/accounts/me").session(session))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.displayName").value("Alice"))
+                .andExpect(jsonPath("$.id").isNumber())
                 .andExpect(jsonPath("$.status").value("ACTIVE"));
     }
 }

@@ -3,9 +3,8 @@ package eu.lordbucket.cherryportal.core.identity.controller;
 import eu.lordbucket.cherryportal.core.identity.dto.LoginRequest;
 import eu.lordbucket.cherryportal.core.identity.dto.RegisterRequest;
 import eu.lordbucket.cherryportal.core.identity.model.LocalCredential;
-import eu.lordbucket.cherryportal.core.identity.model.Account;
 import eu.lordbucket.cherryportal.core.identity.repository.LocalCredentialRepository;
-import eu.lordbucket.cherryportal.core.identity.repository.UserRepository;
+import eu.lordbucket.cherryportal.core.identity.service.AccountService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
@@ -29,20 +28,20 @@ import org.springframework.web.bind.annotation.RestController;
 public class AuthController {
 
     private final LocalCredentialRepository localCredentialRepository;
-    private final UserRepository userRepository;
+    private final AccountService accountService;
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;
     private final SecurityContextRepository securityContextRepository;
 
     public AuthController(
             LocalCredentialRepository localCredentialRepository,
-            UserRepository userRepository,
+            AccountService accountService,
             PasswordEncoder passwordEncoder,
             AuthenticationManager authenticationManager,
             SecurityContextRepository securityContextRepository
     ) {
         this.localCredentialRepository = localCredentialRepository;
-        this.userRepository = userRepository;
+        this.accountService = accountService;
         this.passwordEncoder = passwordEncoder;
         this.authenticationManager = authenticationManager;
         this.securityContextRepository = securityContextRepository;
@@ -53,7 +52,7 @@ public class AuthController {
         if (localCredentialRepository.findByUsername(req.username()).isPresent())
             return ResponseEntity.badRequest().body("Username taken");
 
-        Account account = userRepository.save(new Account(req.displayName()));
+        var account = accountService.createAccount(req.displayName());
         LocalCredential credential = new LocalCredential();
         credential.setAccount(account);
         credential.setUsername(req.username());
