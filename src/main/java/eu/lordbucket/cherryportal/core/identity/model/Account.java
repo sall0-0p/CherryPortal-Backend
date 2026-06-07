@@ -9,23 +9,16 @@ import java.time.Instant;
 
 @Data
 @Entity
-@Table(name = "users")
+@Table(name = "accounts")
 public class Account {
-    public Account() {}
-
-    public Account(String displayName) {
-        this.displayName = displayName;
-        this.status = AccountStatus.ACTIVE;
-    }
-
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
-    private String displayName;
-
-    @Enumerated @Column(nullable = false)
+    @Enumerated(EnumType.STRING) @Column(nullable = false)
     private AccountStatus status;
+
+    @OneToOne(mappedBy = "account", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    private Profile profile;
 
     @CreationTimestamp @Column(nullable = false, updatable = false)
     private Instant createdAt;

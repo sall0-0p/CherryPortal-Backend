@@ -24,7 +24,7 @@ class PortalAccountDetailsServiceTest {
     @Test
     void loadUserByUsername_knownUser_returnsMatchingUserDetails() {
         LocalCredential credential = new LocalCredential();
-        credential.setAccount(new Account("Alice"));
+        credential.setAccount(new Account());
         credential.setUsername("alice");
         credential.setPasswordHash("$2a$hashed");
 

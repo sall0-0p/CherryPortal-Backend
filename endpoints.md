@@ -8,7 +8,7 @@ Base URL: `/api/v1`
 
 Authentication uses **server-side sessions**. On successful login, the server creates a session and returns a `JSESSIONID` cookie. All subsequent requests from the client must include that cookie. Logout invalidates the session server-side.
 
-Usernames and passwords are handled via the `local_credentials` table. The `users` table holds the portal identity — it is auth-method-agnostic by design. Local username/password is just one possible "front door"; external providers (e.g. Discord OAuth) will be added as additional credential types feeding into the same `users` table.
+Usernames and passwords are handled via the `local_credentials` table. The `accounts` table holds the portal identity — it is auth-method-agnostic by design. Local username/password is just one possible "front door"; external providers (e.g. Discord OAuth) will be added as additional credential types feeding into the same `accounts` table. Each account has a `profiles` row (same PK) that holds display information.
 
 Passwords are hashed with BCrypt before storage. Raw passwords are never persisted.
 
@@ -16,7 +16,7 @@ Passwords are hashed with BCrypt before storage. Raw passwords are never persist
 
 ### `POST /api/v1/auth/register`
 
-Creates a new account account with local (username/password) credentials.
+Creates a new account with local (username/password) credentials.
 
 **Auth required:** No
 
@@ -91,13 +91,13 @@ Invalidates the current session.
 
 ---
 
-## Users — `/api/v1/users`
+## Accounts — `/api/v1/accounts`
 
 ---
 
-### `GET /api/v1/users/me`
+### `GET /api/v1/accounts/me`
 
-Returns the portal profile of the currently authenticated account.
+Returns the account info of the currently authenticated account.
 
 **Auth required:** Yes (valid session cookie)
 
@@ -107,7 +107,6 @@ Returns the portal profile of the currently authenticated account.
 ```json
 {
   "id": 1,
-  "displayName": "string",
   "status": "ACTIVE"
 }
 ```
@@ -115,12 +114,46 @@ Returns the portal profile of the currently authenticated account.
 | Field | Notes |
 |---|---|
 | `id` | Internal portal account ID |
-| `displayName` | Display name set at registration |
 | `status` | One of: `ACTIVE`, `SUSPENDED` |
 
 **Responses:**
 
 | Status | Condition |
 |---|---|
-| `200 OK` | Session valid; returns profile. |
+| `200 OK` | Session valid; returns account info. |
 | `401 Unauthorized` | No session, or session has expired/been invalidated. |
+
+---
+
+### `GET /api/v1/accounts/{id}/profile`
+
+Returns the profile of the account with the given ID.
+
+**Auth required:** Yes (valid session cookie)
+
+**Path parameters:**
+
+| Parameter | Notes |
+|---|---|
+| `id` | Account ID |
+
+**Request body:** None
+
+**Response `200 OK`:**
+```json
+{
+  "displayName": "string"
+}
+```
+
+| Field | Notes |
+|---|---|
+| `displayName` | Display name set at registration |
+
+**Responses:**
+
+| Status | Condition |
+|---|---|
+| `200 OK` | Account and profile found. |
+| `401 Unauthorized` | No session, or session has expired/been invalidated. |
+| `404 Not Found` | No account with the given ID exists. Body: `"No such account exists."` |
