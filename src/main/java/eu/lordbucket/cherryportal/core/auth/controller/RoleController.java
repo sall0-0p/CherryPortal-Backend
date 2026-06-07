@@ -3,7 +3,6 @@ package eu.lordbucket.cherryportal.core.auth.controller;
 import eu.lordbucket.cherryportal.core.auth.dto.RoleRequest;
 import eu.lordbucket.cherryportal.core.auth.dto.RoleResponse;
 import eu.lordbucket.cherryportal.core.auth.dto.RoleUpdatableProperties;
-import eu.lordbucket.cherryportal.core.auth.model.Permission;
 import eu.lordbucket.cherryportal.core.auth.service.RoleService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -49,13 +48,13 @@ public class RoleController {
 
     @PostMapping("/{id}/permissions/{key}")
     public ResponseEntity<Void> addPermission(@PathVariable UUID id, @PathVariable String key) {
-        roleService.addPermission(id, Permission.fromKey(key));
+        roleService.addPermission(id, key);
         return ResponseEntity.noContent().build();
     }
 
     @DeleteMapping("/{id}/permissions/{key}")
     public ResponseEntity<Void> removePermission(@PathVariable UUID id, @PathVariable String key) {
-        roleService.removePermission(id, Permission.fromKey(key));
+        roleService.removePermission(id, key);
         return ResponseEntity.noContent().build();
     }
 }
